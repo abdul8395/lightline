@@ -356,7 +356,7 @@
                 try {
                     // Initialize map centered on Times Square, NYC
                     this.map = L.map('map', {
-                        center: [40.7589, -73.9851],
+                        center: [40.757656, -73.996772],
                         zoom: 18,
                         zoomControl: true,
                         scrollWheelZoom: true,
@@ -373,7 +373,7 @@
                     }).addTo(this.map)
 
                     // Add intersection marker that will change color
-                    this.intersectionMarker = L.marker([40.7589, -73.9851])
+                    this.intersectionMarker = L.marker([40.757656, -73.996772])
                         .addTo(this.map)
                         .bindPopup('<b>Main St & 5th Ave</b><br>Traffic Light Location<br><small>Red: 30s | Green: 20s</small>');
 
