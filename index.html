@@ -420,9 +420,9 @@
         class TrafficLightTimer {
             constructor() {
                 this.currentState = 'red';
-                this.timeRemaining = 30;
-                this.redDuration = 30;
-                this.greenDuration = 20;
+                this.timeRemaining = 10;
+                this.redDuration = 10;
+                this.greenDuration = 5;
                 this.isRunning = false;
                 this.interval = null;
                 this.map = null;
@@ -507,110 +507,45 @@
                     this.showMapError('Failed to initialize map. Please check your Mapbox token.');
                 }
             }
-            // Remove the marker creation and use a fixed overlay instead
+        
+
             addTrafficLightMarker() {
-            if (!this.map) return;
+                // Create a custom marker element
+                const markerElement = document.createElement('div');
+                markerElement.className = 'traffic-light-marker';
+                markerElement.style.cssText = `
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    border: 3px solid white;
+                    box-shadow: 0 0 20px rgba(255, 71, 87, 0.5), 0 2px 10px rgba(0,0,0,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    background: #ff4757;
+                `;
+                markerElement.innerHTML = '🚦';
 
-            // Create a fixed marker overlay
-            const markerOverlay = document.createElement('div');
-            markerOverlay.id = 'traffic-marker';
-            markerOverlay.style.cssText = `
-                position: absolute;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                border: 3px solid white;
-                box-shadow: 0 0 20px rgba(255, 71, 87, 0.5), 0 2px 10px rgba(0,0,0,0.3);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-                background: #ff4757;
-                z-index: 10;
-                pointer-events: none;
-                transition: all 0.3s ease;
-                transform: translate(-50%, -50%);
-            `;
-            markerOverlay.innerHTML = '🚦';
+                // Create marker
+                this.intersectionMarker = new mapboxgl.Marker(markerElement)
+                    .setLngLat([-73.9851, 40.7589])
+                    .addTo(this.map);
 
-            // Add to map container
-            const mapContainer = document.getElementById('map');
-            mapContainer.appendChild(markerOverlay);
+                // Add popup
+                const popup = new mapboxgl.Popup({ offset: 25 })
+                    .setHTML(`
+                        <div style="text-align: center; padding: 10px;">
+                            <h4 style="margin: 0 0 10px 0;">Main St & 5th Ave</h4>
+                            <p style="margin: 0; color: #666;">Traffic Light Location</p>
+                            <small style="color: #999;">Red: 30s | Green: 20s</small>
+                        </div>
+                    `);
 
-            // Update marker position when map moves
-            const updateMarkerPosition = () => {
-                const point = this.map.project([-73.9851, 40.7589]);
-                markerOverlay.style.left = point.x + 'px';
-                markerOverlay.style.top = point.y + 'px';
-            };
-
-            // Update position on map events
-            this.map.on('move', updateMarkerPosition);
-            this.map.on('zoom', updateMarkerPosition);
-            this.map.on('rotate', updateMarkerPosition);
-            
-            // Initial position
-            updateMarkerPosition();
-
-            // Store reference for updates
-            this.markerElement = markerOverlay;
+                this.intersectionMarker.setPopup(popup);
             }
-
-            // Update the updateMapMarker function to work with the fixed element
-            updateMapMarker() {
-            if (!this.markerElement) return;
-            
-            const isRed = this.currentState === 'red';
-            const color = isRed ? '#ff4757' : '#2ed573';
-            const shadowColor = isRed ? 'rgba(255, 71, 87, 0.5)' : 'rgba(46, 213, 115, 0.5)';
-            
-            this.markerElement.style.background = color;
-            this.markerElement.style.boxShadow = `0 0 20px ${shadowColor}, 0 2px 10px rgba(0,0,0,0.3)`;
-            
-            if (this.timeRemaining <= 5) {
-                this.markerElement.style.animation = 'pulse 1s infinite';
-            } else {
-                this.markerElement.style.animation = 'none';
-            }
-            }
-
-            // addTrafficLightMarker() {
-            //     // Create a custom marker element
-            //     const markerElement = document.createElement('div');
-            //     markerElement.className = 'traffic-light-marker';
-            //     markerElement.style.cssText = `
-            //         width: 30px;
-            //         height: 30px;
-            //         border-radius: 50%;
-            //         border: 3px solid white;
-            //         box-shadow: 0 0 20px rgba(255, 71, 87, 0.5), 0 2px 10px rgba(0,0,0,0.3);
-            //         display: flex;
-            //         align-items: center;
-            //         justify-content: center;
-            //         font-size: 16px;
-            //         cursor: pointer;
-            //         transition: all 0.3s ease;
-            //         background: #ff4757;
-            //     `;
-            //     markerElement.innerHTML = '🚦';
-
-            //     // Create marker
-            //     this.intersectionMarker = new mapboxgl.Marker(markerElement)
-            //         .setLngLat([-73.9851, 40.7589])
-            //         .addTo(this.map);
-
-            //     // Add popup
-            //     const popup = new mapboxgl.Popup({ offset: 25 })
-            //         .setHTML(`
-            //             <div style="text-align: center; padding: 10px;">
-            //                 <h4 style="margin: 0 0 10px 0;">Main St & 5th Ave</h4>
-            //                 <p style="margin: 0; color: #666;">Traffic Light Location</p>
-            //                 <small style="color: #999;">Red: 30s | Green: 20s</small>
-            //             </div>
-            //         `);
-
-            //     this.intersectionMarker.setPopup(popup);
-            // }
 
             setupEventListeners() {
                 $('#mapViewBtn').click(() => this.switchToMapView());
