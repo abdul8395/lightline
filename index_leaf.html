@@ -326,9 +326,9 @@
         class TrafficLightTimer {
             constructor() {
                 this.currentState = 'red';
-                this.timeRemaining = 30;
-                this.redDuration = 30;
-                this.greenDuration = 20;
+                this.timeRemaining = 10;
+                this.redDuration = 10;
+                this.greenDuration = 5;
                 this.isRunning = false;
                 this.interval = null;
                 this.map = null;
@@ -367,8 +367,9 @@
                     // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     //     maxZoom: 19
                     // }).addTo(this.map);
-                     var googleSat = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
-                        maxZoom: 19,
+                    var googleStreet = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+                        maxZoom: 21,
+                        subdomains:['mt0','mt1','mt2','mt3']
                     }).addTo(this.map)
 
                     // Add intersection marker that will change color
