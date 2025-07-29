@@ -362,15 +362,55 @@
                         scrollWheelZoom: true,
                         attributionControl: false,
                     });
+                    this.map.zoomControl.setPosition('bottomright');
+                    this.map.on('click', function(e) {
+                        console.log('Clicked coordinates:', e.latlng);
+                    });
+                    
                     
                     // Add tile layer with error handling
                     // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     //     maxZoom: 19
                     // }).addTo(this.map);
-                    var googleStreet = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+                      // Replace with your own Mapbox access token
+                   
+
+                    // Base map layers
+                    const mapboxAccessToken = 'pk.eyJ1Ijoiem9sdGFudGhlbWVzYmVyZyIsImEiOiJjazZqaWUwcWswYTBvM21td2Jmcm5mYmdyIn0.7_5YCbbOFRnvqZzCNDo9fw';
+                    var mapboxmap=L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
+                        id: 'mapbox/streets-v11',  // other styles: 'satellite-v9', 'light-v10', etc.
+                        tileSize: 512,
+                        zoomOffset: -1
+                    })
+
+                    var openstreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+                    var googleSat = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
+                        maxZoom: 19,
+                    })
+                    
+                    var googlestreet = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
                         maxZoom: 21,
                         subdomains:['mt0','mt1','mt2','mt3']
-                    }).addTo(this.map)
+                    }).addTo(this.map);
+                    
+                    var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png')
+
+                    // Layer control to change different basemaps
+                    var baseLayers = {
+                        "Mapbox": mapboxmap,
+                        "Google Street": googlestreet,
+                        "Satellite": googleSat,
+                        "OpenStreetMap": openstreet,
+                        "Dark Map": dark,
+                    };
+                    
+                    var overLays = {};
+                    
+                    var layercontrol = L.control.layers(baseLayers, overLays, {
+                        collapsed: true,
+                        position: 'bottomleft'
+                    }).addTo(this.map);
 
                     // Add intersection marker that will change color
                     this.intersectionMarker = L.marker([40.757656, -73.996772])
