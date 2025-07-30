@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LightLine - Traffic Light Timer</title>
     
@@ -13,38 +14,200 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            overflow: hidden;
-        }
+        /* Replace your existing CSS with these updated styles */
 
-        .app-container {
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    overflow: hidden; /* Prevent body scroll on mobile */
+}
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-            position: relative;
-            z-index: 1000;
-        }
+.app-container {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-        .header h1 {
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1000;
+}
+   .header h1 {
             margin: 0;
             font-size: 1.5rem;
             font-weight: 600;
         }
 
+
+.content-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#mapView {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+
+#map {
+    height: 100% !important;
+    width: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Mobile specific fixes */
+@media (max-width: 768px) {
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    .app-container {
+        height: 100vh;
+        height: 100dvh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+    }
+    
+    .header {
+        padding: 0.8rem;
+        min-height: auto;
+    }
+    
+    .header h1 {
+        font-size: 1.25rem;
+        margin: 0;
+    }
+    
+    .content-area {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+    }
+    
+    #mapView {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+    }
+    
+    #map {
+        height: 100% !important;
+        width: 100% !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    
+    .timer-overlay {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        position: absolute;
+        z-index: 1000;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0.6rem;
+    }
+    
+    .header h1 {
+        font-size: 1.1rem;
+    }
+    
+    .view-toggle {
+        margin-top: 0.3rem;
+    }
+    
+    .toggle-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header {
+        padding: 0.5rem 1rem;
+    }
+    
+    .header h1 {
+        font-size: 1.1rem;
+    }
+    
+    .view-toggle {
+        margin-top: 0.2rem;
+    }
+    
+    .timer-overlay {
+        top: 5px;
+        right: 5px;
+        left: auto;
+        min-width: 180px;
+    }
+}
+
+/* Ensure Leaflet container takes full height */
+.leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+/* Fix for iOS Safari viewport issues */
+@supports (-webkit-touch-callout: none) {
+    .app-container {
+        height: -webkit-fill-available;
+    }
+}
+
+/* Fix for very small screens */
+@media (max-width: 320px) {
+    .header {
+        padding: 0.5rem;
+    }
+    
+    .header h1 {
+        font-size: 1rem;
+    }
+    
+    .toggle-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+
+
+     
         .view-toggle {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.3);
@@ -72,31 +235,8 @@
             font-weight: 600;
         }
 
-        .content-area {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-        }
 
-        #mapView {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            min-height: 0;
-        }
 
-        #map {
-            height: 100% !important;
-            width: 100% !important;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
 
         .timer-view {
             height: 100%;
@@ -167,65 +307,7 @@
             margin-top: 1rem;
         }
 
-        /* Enhanced circular progress marker styles */
-        .circular-progress-marker {
-            position: relative;
-            width: 90px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .progress-ring {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 90px;
-            height: 90px;
-        }
-
-        .marker-content {
-            position: relative;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            border: 4px solid white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .marker-countdown {
-            font-size: 22px;
-            line-height: 1;
-            margin-bottom: 2px;
-        }
-
-        .marker-icon {
-            font-size: 14px;
-            line-height: 1;
-        }
-
-        .pulse {
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Status overlay - simplified */
-        .status-overlay {
+        .timer-overlay {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -238,121 +320,85 @@
             text-align: center;
         }
 
-        .status-overlay .status-text {
-            font-size: 1.1rem;
-            color: #333;
-            margin: 0;
-            font-weight: 600;
+        .timer-overlay .mini-lights {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.5rem;
         }
 
+        .timer-overlay .light {
+            width: 20px;
+            height: 20px;
+            margin: 0 3px;
+        }
+
+        .timer-overlay .countdown {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            color: #333;
+        }
+
+        .timer-overlay .status-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Ensure map loads properly */
         .leaflet-container {
-            height: 100% !important;
-            width: 100% !important;
+            height: 100%;
+            width: 100%;
         }
 
         /* Mobile optimizations */
         @media (max-width: 768px) {
-            html, body {
-                height: 100%;
-                overflow: hidden;
-                position: fixed;
-                width: 100%;
-            }
-            
-            .app-container {
-                height: 100vh;
-                height: 100dvh;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                overflow: hidden;
-            }
-            
-            .header {
-                padding: 0.8rem;
-                min-height: auto;
-            }
-            
             .header h1 {
                 font-size: 1.25rem;
-                margin: 0;
             }
             
-            .status-overlay {
+            .timer-overlay {
                 top: 10px;
                 right: 10px;
                 left: 10px;
                 min-width: auto;
             }
-
-            .circular-progress-marker {
-                width: 80px;
-                height: 80px;
+            
+            .timer-display {
+                padding: 2rem 1rem;
             }
-
-            .progress-ring {
-                width: 80px;
-                height: 80px;
+            
+            .countdown {
+                font-size: 3rem;
             }
-
-            .marker-content {
-                width: 60px;
-                height: 60px;
-            }
-
-            .marker-countdown {
-                font-size: 18px;
-            }
-
-            .marker-icon {
-                font-size: 12px;
+            
+            .light {
+                width: 50px;
+                height: 50px;
             }
         }
 
         @media (max-width: 480px) {
-            .header {
-                padding: 0.6rem;
+            .countdown {
+                font-size: 2.5rem;
             }
             
-            .header h1 {
-                font-size: 1.1rem;
+            .status-text {
+                font-size: 1.2rem;
             }
             
-            .toggle-btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-            }
-
-            .circular-progress-marker {
-                width: 70px;
-                height: 70px;
-            }
-
-            .progress-ring {
-                width: 70px;
-                height: 70px;
-            }
-
-            .marker-content {
-                width: 50px;
-                height: 50px;
-            }
-
-            .marker-countdown {
-                font-size: 16px;
-            }
-
-            .marker-icon {
-                font-size: 10px;
-            }
-        }
-
-        /* Fix for iOS Safari viewport issues */
-        @supports (-webkit-touch-callout: none) {
-            .app-container {
-                height: -webkit-fill-available;
+            .light {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -387,8 +433,13 @@
             <div id="mapView">
                 <div id="map"></div>
                 
-                <!-- Status Overlay (simplified) -->
-                <div class="status-overlay" style="display: none !important;">
+                <!-- Timer Overlay on Map -->
+                <div class="timer-overlay">
+                    <div class="mini-lights">
+                        <div class="light red" id="overlayRedLight"></div>
+                        <div class="light green" id="overlayGreenLight"></div>
+                    </div>
+                    <div class="countdown" id="overlayCountdown">30</div>
                     <div class="status-text" id="overlayStatus">Red Light</div>
                 </div>
             </div>
@@ -431,12 +482,13 @@
                 this.isRunning = false;
                 this.interval = null;
                 this.map = null;
-                this.intersectionMarker = null;
+                this.intersectionMarker = null; // Add this line
                 
                 this.init();
             }
 
             init() {
+                // Wait for DOM to be fully loaded
                 if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', () => {
                         this.setupMap();
@@ -452,6 +504,7 @@
 
             setupMap() {
                 try {
+                    // Initialize map centered on Times Square, NYC
                     this.map = L.map('map', {
                         center: [40.757656, -73.996772],
                         zoom: 18,
@@ -459,35 +512,41 @@
                         scrollWheelZoom: true,
                         attributionControl: false,
                     });
-                    
                     this.map.zoomControl.setPosition('bottomright');
-                    
                     this.map.on('click', function(e) {
                         console.log('Clicked coordinates:', e.latlng);
                     });
+                    
+                    
+                    // Add tile layer with error handling
+                    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    //     maxZoom: 19
+                    // }).addTo(this.map);
+                      // Replace with your own Mapbox access token
+                   
 
                     // Base map layers
                     const mapboxAccessToken = 'pk.eyJ1Ijoiem9sdGFudGhlbWVzYmVyZyIsImEiOiJjazZqaWUwcWswYTBvM21td2Jmcm5mYmdyIn0.7_5YCbbOFRnvqZzCNDo9fw';
-                    
-                    var mapboxmap = L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
-                        id: 'mapbox/streets-v11',
+                    var mapboxmap=L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
+                        id: 'mapbox/streets-v11',  // other styles: 'satellite-v9', 'light-v10', etc.
                         tileSize: 512,
                         zoomOffset: -1
-                    });
+                    })
 
                     var openstreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 
                     var googleSat = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
                         maxZoom: 19,
-                    });
+                    })
                     
                     var googlestreet = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
                         maxZoom: 21,
                         subdomains:['mt0','mt1','mt2','mt3']
                     }).addTo(this.map);
                     
-                    var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png');
+                    var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png')
 
+                    // Layer control to change different basemaps
                     var baseLayers = {
                         "Mapbox": mapboxmap,
                         "Google Street": googlestreet,
@@ -503,9 +562,15 @@
                         position: 'bottomleft'
                     }).addTo(this.map);
 
-                    // Add enhanced circular progress marker
-                    this.addEnhancedMarker();
+                    // Add intersection marker that will change color
+                    this.intersectionMarker = L.marker([40.757656, -73.996772])
+                        .addTo(this.map)
+                        .bindPopup('<b>Main St & 5th Ave</b><br>Traffic Light Location<br><small>Red: 30s | Green: 20s</small>');
 
+                    // Update marker initially
+                    this.updateMapMarker();
+
+                    // Force map to resize after a short delay
                     setTimeout(() => {
                         this.map.invalidateSize();
                     }, 100);
@@ -513,6 +578,7 @@
                     console.log('Map initialized successfully');
                 } catch (error) {
                     console.error('Error initializing map:', error);
+                    // Show error message to user
                     $('#map').html(`
                         <div style="
                             display: flex; 
@@ -534,81 +600,6 @@
                 }
             }
 
-            addEnhancedMarker() {
-                if (!this.map) return;
-                this.createCircularProgressMarker();
-            }
-
-            createCircularProgressMarker() {
-                const isRed = this.currentState === 'red';
-                const color = isRed ? '#ff4757' : '#2ed573';
-                const progressColor = isRed ? '#ff4757' : '#2ed573';
-                
-                // Calculate progress - FIXED calculation
-                const totalDuration = isRed ? this.redDuration : this.greenDuration;
-                const elapsed = totalDuration - this.timeRemaining;
-                const progressPercent = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
-                
-                // SVG circle calculations - SIMPLIFIED
-                const radius = 35;
-                const circumference = 2 * Math.PI * radius;
-                const progressLength = (progressPercent / 100) * circumference;
-                
-                console.log(`Time: ${this.timeRemaining}/${totalDuration}, Progress: ${progressPercent.toFixed(1)}%`);
-
-                const markerHtml = `
-                    <div class="circular-progress-marker ${this.timeRemaining <= 5 ? 'pulse' : ''}">
-                        <svg class="progress-ring" width="90" height="90" style="position: absolute; top: 0; left: 0;">
-                            <!-- Background circle -->
-                            <circle cx="45" cy="45" r="${radius}" 
-                                    fill="none" 
-                                    stroke="rgba(255,255,255,0.3)" 
-                                    stroke-width="6"/>
-                            <!-- Progress circle -->
-                            <circle cx="45" cy="45" r="${radius}" 
-                                    fill="none" 
-                                    stroke="${progressColor}" 
-                                    stroke-width="6" 
-                                    stroke-linecap="round"
-                                    stroke-dasharray="${circumference}"
-                                    stroke-dashoffset="${circumference - progressLength}"
-                                    transform="rotate(-90 45 45)"
-                                    style="transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;"/>
-                        </svg>
-                        <div class="marker-content" style="background: ${color}; position: relative; z-index: 10;">
-                            <div class="marker-countdown">${this.timeRemaining}</div>
-                            <div class="marker-icon">🚦</div>
-                        </div>
-                    </div>
-                `;
-
-                const intersectionIcon = L.divIcon({
-                    className: 'enhanced-intersection-marker',
-                    html: markerHtml,
-                    iconSize: [90, 90],
-                    iconAnchor: [45, 45]
-                });
-
-                // Remove existing marker if any
-                if (this.intersectionMarker) {
-                    this.map.removeLayer(this.intersectionMarker);
-                }
-
-                // Create new marker
-                this.intersectionMarker = L.marker([40.757656, -73.996772], { 
-                    icon: intersectionIcon 
-                }).addTo(this.map);
-
-                // Add popup
-                this.intersectionMarker.bindPopup(`
-                    <div style="text-align: center; padding: 10px;">
-                        <h4 style="margin: 0 0 10px 0;">Main St & 5th Ave</h4>
-                        <p style="margin: 0; color: #666;">Traffic Light Location</p>
-                        <small style="color: #999;">Red: ${this.redDuration}s | Green: ${this.greenDuration}s</small>
-                    </div>
-                `);
-}
-
             setupEventListeners() {
                 $('#mapViewBtn').click(() => this.switchToMapView());
                 $('#timerViewBtn').click(() => this.switchToTimerView());
@@ -620,6 +611,7 @@
                 $('#mapViewBtn').addClass('active');
                 $('#timerViewBtn').removeClass('active');
                 
+                // Refresh map size
                 setTimeout(() => {
                     if (this.map) {
                         this.map.invalidateSize();
@@ -670,20 +662,22 @@
                 $('#mainStatus').text(statusText);
                 $('#nextChange').text(this.timeRemaining);
                 
-                // Update status overlay
+                // Update overlay timer
+                $('#overlayCountdown').text(this.timeRemaining);
                 $('#overlayStatus').text(statusText);
                 
-                // Update lights in timer view
+                // Update lights
                 this.updateLights('#redLight', '#greenLight', isRed);
+                this.updateLights('#overlayRedLight', '#overlayGreenLight', isRed);
 
-                // Update enhanced map marker with progress
-                this.createCircularProgressMarker();
+                // Update map marker color
+                this.updateMapMarker();
                 
                 // Add pulse effect when time is running low
                 if (this.timeRemaining <= 5) {
-                    $('#mainCountdown').addClass('pulse');
+                    $('#mainCountdown, #overlayCountdown').addClass('pulse');
                 } else {
-                    $('#mainCountdown').removeClass('pulse');
+                    $('#mainCountdown, #overlayCountdown').removeClass('pulse');
                 }
             }
 
@@ -695,6 +689,38 @@
                     $(redSelector).removeClass('active');
                     $(greenSelector).addClass('active');
                 }
+            }
+
+            updateMapMarker() {
+                if (!this.intersectionMarker) return;
+                
+                const isRed = this.currentState === 'red';
+                const color = isRed ? '#ff4757' : '#2ed573';
+                const bgColor = isRed ? 'rgba(255, 71, 87, 0.2)' : 'rgba(46, 213, 115, 0.2)';
+                
+                const intersectionIcon = L.divIcon({
+                    className: 'intersection-marker',
+                    html: `<div style="
+                        background: ${color}; 
+                        width: 24px; 
+                        height: 24px; 
+                        border-radius: 50%; 
+                        border: 3px solid white; 
+                        box-shadow: 0 0 20px ${bgColor}, 0 2px 10px rgba(0,0,0,0.3);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-weight: bold;
+                        font-size: 12px;
+                        transition: all 0.3s ease;
+                        animation: ${this.timeRemaining <= 5 ? 'pulse 1s infinite' : 'none'};
+                    ">🚦</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                this.intersectionMarker.setIcon(intersectionIcon);
             }
 
             stop() {
@@ -715,6 +741,7 @@
                 console.log('Page hidden');
             } else {
                 console.log('Page visible');
+                // Refresh map when page becomes visible again
                 if (lightLineApp.map) {
                     setTimeout(() => {
                         lightLineApp.map.invalidateSize();

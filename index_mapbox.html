@@ -3,203 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LightLine - Traffic Light Timer</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Mapbox CSS -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
     
     <style>
-        /* Replace your existing CSS with these updated styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f8f9fa;
-    overflow: hidden; /* Prevent body scroll on mobile */
-}
 
-.app-container {
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile */
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 1rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1000;
-}
-
-.content-area {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-#mapView {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    min-height: 0;
-}
-
-#map {
-    height: 100% !important;
-    width: 100% !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-/* Mobile specific fixes */
-@media (max-width: 768px) {
-    html, body {
-        height: 100%;
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-    }
-    
-    .app-container {
-        height: 100vh;
-        height: 100dvh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: hidden;
-    }
-    
-    .header {
-        padding: 0.8rem;
-        min-height: auto;
-    }
-    
-    .header h1 {
-        font-size: 1.25rem;
-        margin: 0;
-    }
-    
-    .content-area {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-    }
-    
-    #mapView {
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-    }
-    
-    #map {
-        height: 100% !important;
-        width: 100% !important;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-    
-    .timer-overlay {
-        top: 10px;
-        right: 10px;
-        left: 10px;
-        min-width: auto;
-        position: absolute;
-        z-index: 1000;
-    }
-}
-
-@media (max-width: 480px) {
-    .header {
-        padding: 0.6rem;
-    }
-    
-    .header h1 {
-        font-size: 1.1rem;
-    }
-    
-    .view-toggle {
-        margin-top: 0.3rem;
-    }
-    
-    .toggle-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-}
-
-/* Landscape mobile orientation */
-@media (max-width: 768px) and (orientation: landscape) {
-    .header {
-        padding: 0.5rem 1rem;
-    }
-    
-    .header h1 {
-        font-size: 1.1rem;
-    }
-    
-    .view-toggle {
-        margin-top: 0.2rem;
-    }
-    
-    .timer-overlay {
-        top: 5px;
-        right: 5px;
-        left: auto;
-        min-width: 180px;
-    }
-}
-
-/* Ensure Leaflet container takes full height */
-.leaflet-container {
-    height: 100% !important;
-    width: 100% !important;
-}
-
-/* Fix for iOS Safari viewport issues */
-@supports (-webkit-touch-callout: none) {
-    .app-container {
-        height: -webkit-fill-available;
-    }
-}
-
-/* Fix for very small screens */
-@media (max-width: 320px) {
-    .header {
-        padding: 0.5rem;
-    }
-    
-    .header h1 {
-        font-size: 1rem;
-    }
-    
-    .toggle-btn {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
-    }
-}
-
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
 
         .header h1 {
             margin: 0;
@@ -236,6 +64,49 @@ body {
 
 
 
+
+
+        /* Add to your CSS or in the style tag */
+        .app-container {
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height for mobile */
+        display: flex;
+        flex-direction: column;
+        }
+
+        .content-area {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        min-height: 0;
+        }
+
+        #mapView {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        }
+
+        #map {
+        height: 100% !important;
+        width: 100% !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        }
+
+        /* Mobile specific fixes */
+        @media (max-width: 768px) {
+        .app-container {
+            height: 100vh;
+            height: 100dvh;
+        }
+        
+        /* Ensure map container takes full height */
+        #map {
+            height: calc(100vh - 140px) !important; /* Adjust 140px based on your header height */
+        }
+        }
 
         .timer-view {
             height: 100%;
@@ -353,10 +224,52 @@ body {
             100% { transform: scale(1); }
         }
 
-        /* Ensure map loads properly */
-        .leaflet-container {
-            height: 100%;
-            width: 100%;
+        /* Map controls styling */
+        .map-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .map-control-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .map-control-btn:hover {
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .map-control-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .token-warning {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            max-width: 400px;
+            z-index: 2000;
         }
 
         /* Mobile optimizations */
@@ -370,6 +283,11 @@ body {
                 right: 10px;
                 left: 10px;
                 min-width: auto;
+            }
+
+            .map-controls {
+                bottom: 10px;
+                right: 10px;
             }
             
             .timer-display {
@@ -418,7 +336,7 @@ body {
             
             <div class="view-toggle">
                 <button class="toggle-btn active" id="mapViewBtn">
-                    <i class="fas fa-map"></i> Map View
+                    <i class="fas fa-globe"></i> Globe View
                 </button>
                 <button class="toggle-btn" id="timerViewBtn">
                     <i class="fas fa-clock"></i> Timer View
@@ -432,6 +350,19 @@ body {
             <div id="mapView">
                 <div id="map"></div>
                 
+                <!-- Map Controls -->
+                <div class="map-controls">
+                    <button class="map-control-btn active" id="globeBtn">
+                        <i class="fas fa-globe"></i> Globe
+                    </button>
+                    <button class="map-control-btn" id="streetBtn">
+                        <i class="fas fa-map"></i> Street
+                    </button>
+                    <button class="map-control-btn" id="satelliteBtn">
+                        <i class="fas fa-satellite"></i> Satellite
+                    </button>
+                </div>
+                
                 <!-- Timer Overlay on Map -->
                 <div class="timer-overlay">
                     <div class="mini-lights">
@@ -440,6 +371,20 @@ body {
                     </div>
                     <div class="countdown" id="overlayCountdown">30</div>
                     <div class="status-text" id="overlayStatus">Red Light</div>
+                </div>
+
+                <!-- Token Warning (will be hidden if token is provided) -->
+                <div class="token-warning" id="tokenWarning">
+                    <i class="fas fa-key" style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;"></i>
+                    <h4>Mapbox Token Required</h4>
+                    <p>To use the Mapbox globe view, you need to:</p>
+                    <ol style="text-align: left; margin: 1rem 0;">
+                        <li>Get a free token from <a href="https://mapbox.com" target="_blank">mapbox.com</a></li>
+                        <li>Replace 'YOUR_MAPBOX_TOKEN' in the code</li>
+                    </ol>
+                    <button class="btn btn-primary" onclick="document.getElementById('tokenWarning').style.display='none'">
+                        Continue with Demo
+                    </button>
                 </div>
             </div>
 
@@ -469,7 +414,7 @@ body {
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'></script>
 
     <script>
         class TrafficLightTimer {
@@ -481,13 +426,15 @@ body {
                 this.isRunning = false;
                 this.interval = null;
                 this.map = null;
-                this.intersectionMarker = null; // Add this line
+                this.intersectionMarker = null;
+                
+                // Mapbox token - Replace with your actual token
+                this.mapboxToken = 'pk.eyJ1Ijoiem9sdGFudGhlbWVzYmVyZyIsImEiOiJjazZqaWUwcWswYTBvM21td2Jmcm5mYmdyIn0.7_5YCbbOFRnvqZzCNDo9fw'; // Replace this with your actual Mapbox token
                 
                 this.init();
             }
 
             init() {
-                // Wait for DOM to be fully loaded
                 if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', () => {
                         this.setupMap();
@@ -503,105 +450,161 @@ body {
 
             setupMap() {
                 try {
-                    // Initialize map centered on Times Square, NYC
-                    this.map = L.map('map', {
-                        center: [40.757656, -73.996772],
-                        zoom: 18,
-                        zoomControl: true,
-                        scrollWheelZoom: true,
-                        attributionControl: false,
+                    // Set Mapbox access token
+                    mapboxgl.accessToken = this.mapboxToken;
+
+                    // Check if token is valid (not the placeholder)
+                    if (this.mapboxToken === 'YOUR_MAPBOX_TOKEN') {
+                        console.warn('Please replace YOUR_MAPBOX_TOKEN with your actual Mapbox token');
+                        // Show token warning
+                        document.getElementById('tokenWarning').style.display = 'block';
+                        return;
+                    } else {
+                        // Hide token warning if token is provided
+                        document.getElementById('tokenWarning').style.display = 'none';
+                    }
+
+                    // Initialize Mapbox map with globe projection
+                    this.map = new mapboxgl.Map({
+                        container: 'map',
+                        style: 'mapbox://styles/mapbox/streets-v12',
+                        center: [-73.9851, 40.7589], // NYC coordinates
+                        zoom: 15,
+                        projection: 'globe', // Enable globe projection
+                        antialias: true,
+                        attributionControl: false
                     });
-                    this.map.zoomControl.setPosition('bottomright');
-                    this.map.on('click', function(e) {
-                        console.log('Clicked coordinates:', e.latlng);
+
+                    // Add map controls
+                    // Add controls to bottom-left position
+                    this.map.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
+                    this.map.addControl(new mapboxgl.FullscreenControl(), 'bottom-left');
+
+                    // Wait for map to load
+                    this.map.on('load', () => {
+                        // Add atmosphere for globe view
+                        this.map.setFog({
+                            'color': 'rgb(186, 210, 235)',
+                            'high-color': 'rgb(36, 92, 223)',
+                            'horizon-blend': 0.02,
+                            'space-color': 'rgb(11, 11, 25)',
+                            'star-intensity': 0.6
+                        });
+
+                        // Add the traffic light marker
+                        this.addTrafficLightMarker();
+                        
+                        console.log('Mapbox map initialized successfully');
                     });
-                    
-                    
-                    // Add tile layer with error handling
-                    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    //     maxZoom: 19
-                    // }).addTo(this.map);
-                      // Replace with your own Mapbox access token
-                   
 
-                    // Base map layers
-                    const mapboxAccessToken = 'pk.eyJ1Ijoiem9sdGFudGhlbWVzYmVyZyIsImEiOiJjazZqaWUwcWswYTBvM21td2Jmcm5mYmdyIn0.7_5YCbbOFRnvqZzCNDo9fw';
-                    var mapboxmap=L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
-                        id: 'mapbox/streets-v11',  // other styles: 'satellite-v9', 'light-v10', etc.
-                        tileSize: 512,
-                        zoomOffset: -1
-                    })
+                    this.map.on('error', (e) => {
+                        console.error('Mapbox error:', e);
+                        this.showMapError('Mapbox failed to load. Please check your token and internet connection.');
+                    });
 
-                    var openstreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-
-                    var googleSat = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
-                        maxZoom: 19,
-                    })
-                    
-                    var googlestreet = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-                        maxZoom: 21,
-                        subdomains:['mt0','mt1','mt2','mt3']
-                    }).addTo(this.map);
-                    
-                    var dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png')
-
-                    // Layer control to change different basemaps
-                    var baseLayers = {
-                        "Mapbox": mapboxmap,
-                        "Google Street": googlestreet,
-                        "Satellite": googleSat,
-                        "OpenStreetMap": openstreet,
-                        "Dark Map": dark,
-                    };
-                    
-                    var overLays = {};
-                    
-                    var layercontrol = L.control.layers(baseLayers, overLays, {
-                        collapsed: true,
-                        position: 'bottomleft'
-                    }).addTo(this.map);
-
-                    // Add intersection marker that will change color
-                    this.intersectionMarker = L.marker([40.757656, -73.996772])
-                        .addTo(this.map)
-                        .bindPopup('<b>Main St & 5th Ave</b><br>Traffic Light Location<br><small>Red: 30s | Green: 20s</small>');
-
-                    // Update marker initially
-                    this.updateMapMarker();
-
-                    // Force map to resize after a short delay
-                    setTimeout(() => {
-                        this.map.invalidateSize();
-                    }, 100);
-
-                    console.log('Map initialized successfully');
                 } catch (error) {
-                    console.error('Error initializing map:', error);
-                    // Show error message to user
-                    $('#map').html(`
-                        <div style="
-                            display: flex; 
-                            align-items: center; 
-                            justify-content: center; 
-                            height: 100%; 
-                            background: #f8f9fa; 
-                            color: #666;
-                            text-align: center;
-                            padding: 2rem;
-                        ">
-                            <div>
-                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                                <h4>Map Loading Error</h4>
-                                <p>Unable to load the map. Please check your internet connection.</p>
-                            </div>
+                    console.error('Error initializing Mapbox map:', error);
+                    this.showMapError('Failed to initialize map. Please check your Mapbox token.');
+                }
+            }
+        
+
+            addTrafficLightMarker() {
+                // Create a custom marker element
+                const markerElement = document.createElement('div');
+                markerElement.className = 'traffic-light-marker';
+                markerElement.style.cssText = `
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    border: 3px solid white;
+                    box-shadow: 0 0 20px rgba(255, 71, 87, 0.5), 0 2px 10px rgba(0,0,0,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    background: #ff4757;
+                `;
+                markerElement.innerHTML = '🚦';
+
+                // Create marker
+                this.intersectionMarker = new mapboxgl.Marker(markerElement)
+                    .setLngLat([-73.9851, 40.7589])
+                    .addTo(this.map);
+
+                // Add popup
+                const popup = new mapboxgl.Popup({ offset: 25 })
+                    .setHTML(`
+                        <div style="text-align: center; padding: 10px;">
+                            <h4 style="margin: 0 0 10px 0;">Main St & 5th Ave</h4>
+                            <p style="margin: 0; color: #666;">Traffic Light Location</p>
+                            <small style="color: #999;">Red: 30s | Green: 20s</small>
                         </div>
                     `);
-                }
+
+                this.intersectionMarker.setPopup(popup);
             }
 
             setupEventListeners() {
                 $('#mapViewBtn').click(() => this.switchToMapView());
                 $('#timerViewBtn').click(() => this.switchToTimerView());
+
+                // Map style controls
+                $('#globeBtn').click(() => this.setMapStyle('globe'));
+                $('#streetBtn').click(() => this.setMapStyle('streets'));
+                $('#satelliteBtn').click(() => this.setMapStyle('satellite'));
+            }
+
+            setMapStyle(style) {
+                if (!this.map) return;
+
+                // Update button states
+                $('.map-control-btn').removeClass('active');
+                
+                let mapStyle;
+                switch(style) {
+                    case 'globe':
+                        mapStyle = 'mapbox://styles/mapbox/streets-v12';
+                        this.map.setProjection('globe');
+                        $('#globeBtn').addClass('active');
+                        break;
+                    case 'streets':
+                        mapStyle = 'mapbox://styles/mapbox/streets-v12';
+                        this.map.setProjection('mercator');
+                        $('#streetBtn').addClass('active');
+                        break;
+                    case 'satellite':
+                        mapStyle = 'mapbox://styles/mapbox/satellite-streets-v12';
+                        this.map.setProjection('mercator');
+                        $('#satelliteBtn').addClass('active');
+                        break;
+                }
+
+                this.map.setStyle(mapStyle);
+            }
+
+            showMapError(message) {
+                $('#map').html(`
+                    <div style="
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        height: 100%; 
+                        background: #f8f9fa; 
+                        color: #666;
+                        text-align: center;
+                        padding: 2rem;
+                    ">
+                        <div>
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: #ff4757;"></i>
+                            <h4>Map Loading Error</h4>
+                            <p>${message}</p>
+                            <small>Get your free token at <a href="https://mapbox.com" target="_blank">mapbox.com</a></small>
+                        </div>
+                    </div>
+                `);
             }
 
             switchToMapView() {
@@ -610,10 +613,9 @@ body {
                 $('#mapViewBtn').addClass('active');
                 $('#timerViewBtn').removeClass('active');
                 
-                // Refresh map size
                 setTimeout(() => {
                     if (this.map) {
-                        this.map.invalidateSize();
+                        this.map.resize();
                     }
                 }, 100);
             }
@@ -669,7 +671,7 @@ body {
                 this.updateLights('#redLight', '#greenLight', isRed);
                 this.updateLights('#overlayRedLight', '#overlayGreenLight', isRed);
 
-                // Update map marker color
+                // Update map marker
                 this.updateMapMarker();
                 
                 // Add pulse effect when time is running low
@@ -695,31 +697,19 @@ body {
                 
                 const isRed = this.currentState === 'red';
                 const color = isRed ? '#ff4757' : '#2ed573';
-                const bgColor = isRed ? 'rgba(255, 71, 87, 0.2)' : 'rgba(46, 213, 115, 0.2)';
+                const shadowColor = isRed ? 'rgba(255, 71, 87, 0.5)' : 'rgba(46, 213, 115, 0.5)';
                 
-                const intersectionIcon = L.divIcon({
-                    className: 'intersection-marker',
-                    html: `<div style="
-                        background: ${color}; 
-                        width: 24px; 
-                        height: 24px; 
-                        border-radius: 50%; 
-                        border: 3px solid white; 
-                        box-shadow: 0 0 20px ${bgColor}, 0 2px 10px rgba(0,0,0,0.3);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: white;
-                        font-weight: bold;
-                        font-size: 12px;
-                        transition: all 0.3s ease;
-                        animation: ${this.timeRemaining <= 5 ? 'pulse 1s infinite' : 'none'};
-                    ">🚦</div>`,
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
-                });
-                
-                this.intersectionMarker.setIcon(intersectionIcon);
+                const markerElement = this.intersectionMarker.getElement();
+                if (markerElement) {
+                    markerElement.style.background = color;
+                    markerElement.style.boxShadow = `0 0 20px ${shadowColor}, 0 2px 10px rgba(0,0,0,0.3)`;
+                    
+                    if (this.timeRemaining <= 5) {
+                        markerElement.style.animation = 'pulse 1s infinite';
+                    } else {
+                        markerElement.style.animation = 'none';
+                    }
+                }
             }
 
             stop() {
@@ -740,10 +730,9 @@ body {
                 console.log('Page hidden');
             } else {
                 console.log('Page visible');
-                // Refresh map when page becomes visible again
                 if (lightLineApp.map) {
                     setTimeout(() => {
-                        lightLineApp.map.invalidateSize();
+                        lightLineApp.map.resize();
                     }, 100);
                 }
             }
