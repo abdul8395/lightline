@@ -250,7 +250,7 @@
             width: 100% !important;
         }
 
-        /* Mobile optimizations */
+        /* Mobile optimizations - FIXED */
         @media (max-width: 768px) {
             html, body {
                 height: 100%;
@@ -287,27 +287,29 @@
                 min-width: auto;
             }
 
+            /* Mobile marker scaling - FIXED */
             .circular-progress-marker {
-                width: 80px;
-                height: 80px;
+                width: 75px;
+                height: 75px;
             }
 
             .progress-ring {
-                width: 80px;
-                height: 80px;
+                width: 75px;
+                height: 75px;
             }
 
             .marker-content {
-                width: 60px;
-                height: 60px;
+                width: 55px;
+                height: 55px;
+                border: 3px solid white;
             }
 
             .marker-countdown {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             .marker-icon {
-                font-size: 12px;
+                font-size: 10px;
             }
         }
 
@@ -325,27 +327,29 @@
                 font-size: 0.8rem;
             }
 
+            /* Small mobile marker scaling - FIXED */
             .circular-progress-marker {
-                width: 70px;
-                height: 70px;
+                width: 65px;
+                height: 65px;
             }
 
             .progress-ring {
-                width: 70px;
-                height: 70px;
+                width: 65px;
+                height: 65px;
             }
 
             .marker-content {
-                width: 50px;
-                height: 50px;
+                width: 45px;
+                height: 45px;
+                border: 2px solid white;
             }
 
             .marker-countdown {
-                font-size: 16px;
+                font-size: 14px;
             }
 
             .marker-icon {
-                font-size: 10px;
+                font-size: 8px;
             }
         }
 
@@ -388,7 +392,7 @@
                 <div id="map"></div>
                 
                 <!-- Status Overlay (simplified) -->
-                <div class="status-overlay" style="display: none !important;">
+                <div class="status-overlay">
                     <div class="status-text" id="overlayStatus">Red Light</div>
                 </div>
             </div>
@@ -544,40 +548,80 @@
                 const color = isRed ? '#ff4757' : '#2ed573';
                 const progressColor = isRed ? '#ff4757' : '#2ed573';
                 
-                // Calculate progress - FIXED calculation
+                // Calculate progress
                 const totalDuration = isRed ? this.redDuration : this.greenDuration;
                 const elapsed = totalDuration - this.timeRemaining;
                 const progressPercent = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
                 
-                // SVG circle calculations - SIMPLIFIED
-                const radius = 35;
+                // Responsive sizing based on screen width
+                const screenWidth = window.innerWidth;
+                let containerSize, radius, strokeWidth, contentSize;
+                
+                if (screenWidth <= 480) {
+                    // Small mobile
+                    containerSize = 65;
+                    radius = 28;
+                    strokeWidth = 4;
+                    contentSize = 45;
+                } else if (screenWidth <= 768) {
+                    // Mobile
+                    containerSize = 75;
+                    radius = 32;
+                    strokeWidth = 5;
+                    contentSize = 55;
+                } else {
+                    // Desktop
+                    containerSize = 90;
+                    radius = 35;
+                    strokeWidth = 6;
+                    contentSize = 70;
+                }
+                
                 const circumference = 2 * Math.PI * radius;
                 const progressLength = (progressPercent / 100) * circumference;
+                const center = containerSize / 2;
                 
-                console.log(`Time: ${this.timeRemaining}/${totalDuration}, Progress: ${progressPercent.toFixed(1)}%`);
+                console.log(`Screen: ${screenWidth}px, Container: ${containerSize}px, Progress: ${progressPercent.toFixed(1)}%`);
 
                 const markerHtml = `
-                    <div class="circular-progress-marker ${this.timeRemaining <= 5 ? 'pulse' : ''}">
-                        <svg class="progress-ring" width="90" height="90" style="position: absolute; top: 0; left: 0;">
+                    <div class="circular-progress-marker ${this.timeRemaining <= 5 ? 'pulse' : ''}" style="width: ${containerSize}px; height: ${containerSize}px;">
+                        <svg class="progress-ring" width="${containerSize}" height="${containerSize}" style="position: absolute; top: 0; left: 0;">
                             <!-- Background circle -->
-                            <circle cx="45" cy="45" r="${radius}" 
+                            <circle cx="${center}" cy="${center}" r="${radius}" 
                                     fill="none" 
                                     stroke="rgba(255,255,255,0.3)" 
-                                    stroke-width="6"/>
+                                    stroke-width="${strokeWidth}"/>
                             <!-- Progress circle -->
-                            <circle cx="45" cy="45" r="${radius}" 
+                            <circle cx="${center}" cy="${center}" r="${radius}" 
                                     fill="none" 
                                     stroke="${progressColor}" 
-                                    stroke-width="6" 
+                                    stroke-width="${strokeWidth}" 
                                     stroke-linecap="round"
                                     stroke-dasharray="${circumference}"
                                     stroke-dashoffset="${circumference - progressLength}"
-                                    transform="rotate(-90 45 45)"
+                                    transform="rotate(-90 ${center} ${center})"
                                     style="transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;"/>
                         </svg>
-                        <div class="marker-content" style="background: ${color}; position: relative; z-index: 10;">
-                            <div class="marker-countdown">${this.timeRemaining}</div>
-                            <div class="marker-icon">🚦</div>
+                        <div class="marker-content" style="
+                            background: ${color}; 
+                            position: relative; 
+                            z-index: 10;
+                            width: ${contentSize}px;
+                            height: ${contentSize}px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 50%;
+                            color: white;
+                            font-weight: bold;
+                            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                            border: ${strokeWidth - 2}px solid white;
+                            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+                            transition: all 0.3s ease;
+                        ">
+                            <div class="marker-countdown" style="font-size: ${screenWidth <= 480 ? '14px' : screenWidth <= 768 ? '16px' : '22px'}; line-height: 1; margin-bottom: 2px;">${this.timeRemaining}</div>
+                            <div class="marker-icon" style="font-size: ${screenWidth <= 480 ? '8px' : screenWidth <= 768 ? '10px' : '14px'}; line-height: 1;">🚦</div>
                         </div>
                     </div>
                 `;
@@ -585,8 +629,8 @@
                 const intersectionIcon = L.divIcon({
                     className: 'enhanced-intersection-marker',
                     html: markerHtml,
-                    iconSize: [90, 90],
-                    iconAnchor: [45, 45]
+                    iconSize: [containerSize, containerSize],
+                    iconAnchor: [center, center]
                 });
 
                 // Remove existing marker if any
