@@ -392,7 +392,7 @@
                 <div id="map"></div>
                 
                 <!-- Status Overlay (simplified) -->
-                <div class="status-overlay">
+                <div class="status-overlay" style="display: none !important;">
                     <div class="status-text" id="overlayStatus">Red Light</div>
                 </div>
             </div>
@@ -457,7 +457,7 @@
             setupMap() {
                 try {
                     this.map = L.map('map', {
-                        center: [40.757656, -73.996772],
+                        center: [34.185006, -84.108074],
                         zoom: 18,
                         zoomControl: true,
                         scrollWheelZoom: true,
@@ -639,7 +639,7 @@
                 }
 
                 // Create new marker
-                this.intersectionMarker = L.marker([40.757656, -73.996772], { 
+                this.intersectionMarker = L.marker([34.185006, -84.108074], { 
                     icon: intersectionIcon 
                 }).addTo(this.map);
 
